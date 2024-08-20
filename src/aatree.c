@@ -1,7 +1,7 @@
 #include <malloc.h>
 #include "aatree.h"
 
-static void skew(AATreeNode* node)
+static AATreeNode* skew(AATreeNode* node)
 {
     if (node->left != NULL && node->left->level == node->level)
     {
@@ -10,9 +10,11 @@ static void skew(AATreeNode* node)
         temp->left = node->right;
         node->right = temp;
     }
+
+    return node;
 }
 
-static void split(AATreeNode* node)
+static AATreeNode* split(AATreeNode* node)
 {
     if (node->right != NULL && node->right->right != NULL && node->right->right->level == node->level)
     {
@@ -22,6 +24,8 @@ static void split(AATreeNode* node)
         node->left = temp;
         node->level = node->level + 1;
     }
+
+    return node;
 }
 
 AATreeNode* AATreeCreate(const uint8_t key, void* data)
@@ -46,7 +50,7 @@ void AATreeDestroy(AATreeNode *root)
     }
 }
 
-void AATreeInsert(const uint8_t key, void* data, AATreeNode* root, bool* success)
+AATreeNode* AATreeInsert(const uint8_t key, void* data, AATreeNode* root)
 {
     if (root == NULL)
     {
@@ -56,25 +60,28 @@ void AATreeInsert(const uint8_t key, void* data, AATreeNode* root, bool* success
         root->left = NULL;
         root->right = NULL;
         root->level = 1;
-        *success = true;
+
+        return root;
     }
     else
     {
         if (key < root->key)
         {
-            AATreeInsert(key, data, root->left, success);
+            root->left = AATreeInsert(key, data, root->left);
         }
         else if (key > root->key)
         {
-            AATreeInsert(key, data, root->right, success);
+            root->right = AATreeInsert(key, data, root->right);
         }
         else
         {
-            *success = false;
+            return NULL;
         }
 
-        skew(root);
-        split(root);
+        root = skew(root);
+        root = split(root);
+
+        return root;
     }
 }
 

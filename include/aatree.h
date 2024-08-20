@@ -27,7 +27,7 @@ typedef struct AATreeNode
 AATreeNode* AATreeCreate(uint8_t key, void* data);
 void AATreeDestroy(AATreeNode* root);
 
-void AATreeInsert(uint8_t key, void* data, AATreeNode* root, bool* success);
+AATreeNode* AATreeInsert(uint8_t key, void* data, AATreeNode* root);
 void AATreeDelete(uint8_t key, AATreeNode* root, bool* success);
 
 #endif
