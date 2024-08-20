@@ -1,27 +1,22 @@
-#include "aatree.h"
 #include <malloc.h>
-#include <stddef.h>
+#include "aatree.h"
 
-inline static void skew(Node* node)
+static void skew(AATreeNode* node)
 {
-    Node *temp;
-
     if (node->left != NULL && node->left->level == node->level)
     {
-        temp = node;
+        AATreeNode* temp = node;
         node = node->left;
         temp->left = node->right;
         node->right = temp;
     }
 }
 
-inline static void split(Node* node)
+static void split(AATreeNode* node)
 {
-    Node *temp;
-
     if (node->right != NULL && node->right->right != NULL && node->right->right->level == node->level)
     {
-        temp = node;
+        AATreeNode* temp = node;
         node = node->right;
         temp->right = node->left;
         node->left = temp;
@@ -29,32 +24,61 @@ inline static void split(Node* node)
     }
 }
 
-void insert(uint8_t key, Node *tree, bool *success)
+AATreeNode* AATreeCreate(const uint8_t key, void* data)
 {
-    if (tree == NULL)
+    AATreeNode* root = malloc(sizeof(AATreeNode));
+    root->key = key;
+    root->data = data;
+    root->left = NULL;
+    root->right = NULL;
+    root->level = 1;
+
+    return root;
+}
+
+void AATreeDestroy(AATreeNode *root)
+{
+    if (root != NULL)
     {
-        tree = malloc(sizeof(Node));
-        tree->left = NULL;
-        tree->right = NULL;
-        tree->level = 1;
+        AATreeDestroy(root->left);
+        AATreeDestroy(root->right);
+        free(root);
+    }
+}
+
+void AATreeInsert(const uint8_t key, void* data, AATreeNode* root, bool* success)
+{
+    if (root == NULL)
+    {
+        root = malloc(sizeof(AATreeNode));
+        root->key = key;
+        root->data = data;
+        root->left = NULL;
+        root->right = NULL;
+        root->level = 1;
         *success = true;
     }
     else
     {
-        if (key < tree->key)
+        if (key < root->key)
         {
-            insert(key, tree->left, success);
+            AATreeInsert(key, data, root->left, success);
         }
-        else if (key > tree->key)
+        else if (key > root->key)
         {
-            insert(key, tree->right, success);
+            AATreeInsert(key, data, root->right, success);
         }
         else
         {
             *success = false;
         }
 
-        skew(tree);
-        split(tree);
+        skew(root);
+        split(root);
     }
+}
+
+void AATreeDelete(uint8_t key, AATreeNode* root, bool* success)
+{
+
 }

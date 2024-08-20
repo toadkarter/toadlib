@@ -6,4 +6,5 @@ set(CMAKE_C_STANDARD 99)
 include_directories(include)
 file(GLOB SRC_FILES "src/*.c")
 
-add_library(toadlib STATIC ${SRC_FILES})
+add_executable(toadlib ${SRC_FILES})
+#add_library(toadlib STATIC ${SRC_FILES})
