@@ -1,11 +1,11 @@
 #include <malloc.h>
 #include "aatree.h"
 
-static AATreeNode* skew(AATreeNode* node)
+static aaTreeNode* skew(aaTreeNode* node)
 {
     if (node->left != NULL && node->left->level == node->level)
     {
-        AATreeNode* temp = node;
+        aaTreeNode* temp = node;
         node = node->left;
         temp->left = node->right;
         node->right = temp;
@@ -14,11 +14,11 @@ static AATreeNode* skew(AATreeNode* node)
     return node;
 }
 
-static AATreeNode* split(AATreeNode* node)
+static aaTreeNode* split(aaTreeNode* node)
 {
     if (node->right != NULL && node->right->right != NULL && node->right->right->level == node->level)
     {
-        AATreeNode* temp = node;
+        aaTreeNode* temp = node;
         node = node->right;
         temp->right = node->left;
         node->left = temp;
@@ -28,9 +28,9 @@ static AATreeNode* split(AATreeNode* node)
     return node;
 }
 
-AATreeNode* AATreeCreate(const uint8_t key, void* data)
+aaTreeNode* aaTreeCreate(const uint8_t key, void* data)
 {
-    AATreeNode* root = malloc(sizeof(AATreeNode));
+    aaTreeNode* root = malloc(sizeof(aaTreeNode));
     root->key = key;
     root->data = data;
     root->left = NULL;
@@ -40,21 +40,21 @@ AATreeNode* AATreeCreate(const uint8_t key, void* data)
     return root;
 }
 
-void AATreeDestroy(AATreeNode *root)
+void aaTreeDestroy(aaTreeNode *root)
 {
     if (root != NULL)
     {
-        AATreeDestroy(root->left);
-        AATreeDestroy(root->right);
+        aaTreeDestroy(root->left);
+        aaTreeDestroy(root->right);
         free(root);
     }
 }
 
-AATreeNode* AATreeInsert(const uint8_t key, void* data, AATreeNode* root)
+aaTreeNode* aaTreeInsert(const uint8_t key, void* data, aaTreeNode* root)
 {
     if (root == NULL)
     {
-        root = malloc(sizeof(AATreeNode));
+        root = malloc(sizeof(aaTreeNode));
         root->key = key;
         root->data = data;
         root->left = NULL;
@@ -67,11 +67,11 @@ AATreeNode* AATreeInsert(const uint8_t key, void* data, AATreeNode* root)
     {
         if (key < root->key)
         {
-            root->left = AATreeInsert(key, data, root->left);
+            root->left = aaTreeInsert(key, data, root->left);
         }
         else if (key > root->key)
         {
-            root->right = AATreeInsert(key, data, root->right);
+            root->right = aaTreeInsert(key, data, root->right);
         }
         else
         {
@@ -85,7 +85,24 @@ AATreeNode* AATreeInsert(const uint8_t key, void* data, AATreeNode* root)
     }
 }
 
-void AATreeDelete(uint8_t key, AATreeNode* root, bool* success)
+aaTreeNode* aaTreeFind(uint8_t key, aaTreeNode* root)
 {
+    if (root == NULL)
+    {
+        return NULL;
+    }
 
+    if (root->key == key)
+    {
+        return root;
+    }
+
+    if (root->key > key)
+    {
+        aaTreeFind(key, root->right);
+    }
+    else if (root->key < key)
+    {
+        aaTreeFind(key, root->left);
+    }
 }

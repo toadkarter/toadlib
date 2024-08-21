@@ -5,7 +5,7 @@
  * AA Tree
  *
  * A basic implementation of the AA Tree, as described in "Balanced Search Trees Made Simple" (Andersson, 1993).
- * AATreeCreate, AATreeDestroy and AATreeInsert allocate memory on the heap, so make sure that you call AATreeDestroy
+ * aaTreeCreate and aaTreeInsert allocate memory on the heap, so make sure that you call aaTreeDestroy
  * when finished with the structure to avoid memory leaks.
  *
  * Data stored inside nodes is not copied - the pointer is directly assigned to the data variable. Freeing the node
@@ -14,20 +14,20 @@
 
 #include "definitions.h"
 
-typedef struct AATreeNode
+typedef struct aaTreeNode
 {
   uint8_t key;
   void* data;
 
   uint8_t level;
-  struct AATreeNode* left;
-  struct AATreeNode* right;
-} AATreeNode;
+  struct aaTreeNode* left;
+  struct aaTreeNode* right;
+} aaTreeNode;
 
-AATreeNode* AATreeCreate(uint8_t key, void* data);
-void AATreeDestroy(AATreeNode* root);
+aaTreeNode* aaTreeCreate(uint8_t key, void* data);
+void aaTreeDestroy(aaTreeNode* root);
 
-AATreeNode* AATreeInsert(uint8_t key, void* data, AATreeNode* root);
-void AATreeDelete(uint8_t key, AATreeNode* root, bool* success);
+aaTreeNode* aaTreeInsert(uint8_t key, void* data, aaTreeNode* root);
+aaTreeNode* aaTreeFind(uint8_t key, aaTreeNode* root);
 
 #endif
